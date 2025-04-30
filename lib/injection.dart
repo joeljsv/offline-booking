@@ -20,7 +20,7 @@ Future<void> init() async {
   // Repository
   sl.registerLazySingleton<TicketRepository>(() => TicketRepositoryImpl(ticketBox));
 
-  // ✅ Register use cases
+  // Register use cases
   sl.registerLazySingleton(() => BookTicket(sl()));
   sl.registerLazySingleton(() => CancelTicket(sl()));
   sl.registerLazySingleton(() => GetAllTickets(sl()));
