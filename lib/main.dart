@@ -9,14 +9,14 @@ import 'presentation/routes/app_router.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await di.init(); // Initialize dependencies
-  await NotificationService.init(); // Initialize local notifications
+  await di.init(); 
+  await NotificationService.init(); 
 
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  final _appRouter = AppRouter(); // 🔗 AutoRoute instance
+  final _appRouter = AppRouter(); 
 
   MyApp({super.key});
 
@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        routerConfig: _appRouter.config(), // AutoRoute setup
+        routerConfig: _appRouter.config(), 
       ),
     );
   }

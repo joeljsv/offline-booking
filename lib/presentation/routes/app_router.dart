@@ -5,7 +5,7 @@ import 'package:booking/presentation/pages/book_ticket_page.dart';
 import 'package:booking/presentation/pages/cancel_ticket_page.dart';
 import 'package:flutter/foundation.dart';
 
-part 'app_router.gr.dart'; // this will be generated
+part 'app_router.gr.dart'; 
 
 @AutoRouterConfig()
 class AppRouter extends _$AppRouter {

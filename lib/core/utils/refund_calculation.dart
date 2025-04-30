@@ -1,6 +1,12 @@
+
 import 'package:booking/core/enums/ticket_enums.dart';
 import 'package:booking/domain/entities/ticket.dart';
-
+/// Calculates the refund amount for a given ticket based on the journey date 
+/// and ticket class.
+///
+/// - Parameters:
+///   - `ticket`: The ticket for which the refund is to be calculated.
+/// - Returns: The calculated refund amount as a double.
 double calculateRefund(Ticket ticket) {
   final now = DateTime.now();
   final hoursDiff = ticket.journeyDate.difference(now).inHours;
