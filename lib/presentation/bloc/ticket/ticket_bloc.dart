@@ -43,11 +43,13 @@ class TicketBloc extends Bloc<TicketEvent, TicketState> {
       _updateTicketStatuses();
       _sortTicketsByJourneyDate();
 
-      emit(TicketLoaded(
-        allTickets: _allTickets,
-        filteredTickets: _allTickets,
-        balance: _balance,
-      ));
+      emit(
+        TicketLoaded(
+          allTickets: _allTickets,
+          filteredTickets: _allTickets,
+          balance: _balance,
+        ),
+      );
     } catch (e) {
       emit(TicketOperationFailure(e.toString()));
     }
@@ -63,7 +65,8 @@ class TicketBloc extends Bloc<TicketEvent, TicketState> {
 
       await NotificationService.show(
         title: 'Ticket Booked: ${event.ticket.id}',
-        body: 'Amount: ₹${event.ticket.amount.toInt()} | Balance: ₹${_balance.toInt()}',
+        body:
+            'Amount: ₹${event.ticket.amount.toInt()} | Balance: ₹${_balance.toInt()}',
       );
 
       add(LoadTickets());
@@ -95,39 +98,37 @@ class TicketBloc extends Bloc<TicketEvent, TicketState> {
     }
   }
 
- void _onFilterTickets(FilterTicketsEvent event, Emitter<TicketState> emit) {
-  final now = DateTime.now();
+  void _onFilterTickets(FilterTicketsEvent event, Emitter<TicketState> emit) {
+    final now = DateTime.now();
 
-  _updateTicketStatuses();
-  _sortTicketsByJourneyDate();
+    _updateTicketStatuses();
+    _sortTicketsByJourneyDate();
 
-  final filtered = _allTickets.where((ticket) {
-    final matchesSearch = ticket.passengerName.toLowerCase().contains(
-      event.searchQuery.toLowerCase(),
+    final filtered =
+        _allTickets.where((ticket) {
+          final matchesSearch = ticket.passengerName.toLowerCase().contains(
+            event.searchQuery.toLowerCase(),
+          );
+
+          // final matchesDate = !needsDateMatch || isSameDate(ticket.journeyDate, event.selectedDate);
+
+          final ticketStatus = _getStatus(ticket, now);
+
+          final matchesStatus =
+              event.filterStatus == TicketFilterStatus.all ||
+              event.filterStatus == ticketStatus;
+
+          return matchesSearch && matchesStatus;
+        }).toList();
+
+    emit(
+      TicketLoaded(
+        allTickets: _allTickets,
+        filteredTickets: filtered,
+        balance: _balance,
+      ),
     );
-
-    final matchesDate = (event.filterStatus == TicketFilterStatus.upcoming ||
-                         event.filterStatus == TicketFilterStatus.completed)
-        ? ticket.journeyDate.year == event.selectedDate.year &&
-            ticket.journeyDate.month == event.selectedDate.month &&
-            ticket.journeyDate.day == event.selectedDate.day
-        : true;
-
-    final ticketStatus = _getStatus(ticket, now);
-
-    final matchesStatus = event.filterStatus == TicketFilterStatus.all ||
-        event.filterStatus == ticketStatus;
-
-    return matchesSearch && matchesDate && matchesStatus;
-  }).toList();
-
-  emit(TicketLoaded(
-    allTickets: _allTickets,
-    filteredTickets: filtered,
-    balance: _balance,
-  ));
-}
-
+  }
 
   Future<void> _updateBalance(double value) async {
     _balance = value;
@@ -136,17 +137,19 @@ class TicketBloc extends Bloc<TicketEvent, TicketState> {
 
   void _updateTicketStatuses() {
     final now = DateTime.now();
-    _allTickets = _allTickets.map((ticket) {
-      final isCompleted = !ticket.isCancelled && ticket.journeyDate.isBefore(now);
-      if (isCompleted && ticket.status != TicketStatus.completed) {
-        return ticket.copyWith(status: TicketStatus.completed);
-      }
-      // If the ticket is cancelled, set its status to cancelled
-      if (ticket.isCancelled && ticket.status != TicketStatus.cancelled) {
-        return ticket.copyWith(status: TicketStatus.cancelled);
-      }
-      return ticket;
-    }).toList();
+    _allTickets =
+        _allTickets.map((ticket) {
+          final isCompleted =
+              !ticket.isCancelled && ticket.journeyDate.isBefore(now);
+          if (isCompleted && ticket.status != TicketStatus.completed) {
+            return ticket.copyWith(status: TicketStatus.completed);
+          }
+          // If the ticket is cancelled, set its status to cancelled
+          if (ticket.isCancelled && ticket.status != TicketStatus.cancelled) {
+            return ticket.copyWith(status: TicketStatus.cancelled);
+          }
+          return ticket;
+        }).toList();
   }
 
   void _sortTicketsByJourneyDate() {
@@ -154,8 +157,16 @@ class TicketBloc extends Bloc<TicketEvent, TicketState> {
   }
 
   TicketFilterStatus _getStatus(Ticket ticket, DateTime now) {
-    if (ticket.isCancelled) return TicketFilterStatus.cancelled;
-    if (ticket.journeyDate.isAfter(now)) return TicketFilterStatus.upcoming;
-    return TicketFilterStatus.completed;
+    final status =
+        ticket.isCancelled
+            ? TicketFilterStatus.cancelled
+            : ticket.journeyDate.isAfter(now)
+            ? TicketFilterStatus.upcoming
+            : TicketFilterStatus.completed;
+
+    print(
+      '[DEBUG] ${ticket.passengerName} | Journey: ${ticket.journeyDate} | Status: $status',
+    );
+    return status;
   }
 }
