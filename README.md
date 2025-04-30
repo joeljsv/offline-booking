@@ -1,16 +1,74 @@
-# booking
+# 🎫 Offline-First Flutter Ticket Booking App
+A clean architecture-based Flutter application for booking and managing transport tickets offline using `Hive`, `BLoC`, `AutoRoute`, and `GetIt`. The app is designed to simulate local notifications, maintain balance, and handle cancellation logic with refund rules.
 
-A new Flutter project.
+---
 
-## Getting Started
+## 📦 Features
 
-This project is a starting point for a Flutter application.
+- ✅ Offline-first storage with Hive
+- ✅ Clean architecture (data, domain, presentation layers)
+- ✅ State management using BLoC
+- ✅ Route navigation powered by AutoRoute
+- ✅ Balance tracking and refund handling
+- ✅ Local push notifications for updates
+- ✅ Advanced filtering and search functionality
+- ✅ Reusable and modular UI components
+- ✅ Testable and maintainable folder structure
 
-A few resources to get you started if this is your first Flutter project:
+---
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## 🗂 Folder Structure
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```
+lib/
+├── core/
+│   ├── constants/
+│   ├── enums/
+│   └── utils/
+├── data/
+│   ├── models/
+│   ├── repositories/
+│   ├── repositories_impl/
+│   └── services/
+├── domain/
+│   ├── entities/
+│   ├── usecases/
+│   └── repositories/
+├── presentation/
+│   ├── bloc/ticket/
+│   ├── pages/
+│   ├── routes/
+│   └── widgets/
+├── injection.dart
+└── main.dart
+
+screen/ (contains screenshots)
+apks/   (contains build APKs)
+```
+
+---
+
+## 🧱 Tech Stack & Dependencies
+
+### Core Dependencies
+| Package                    | Purpose                      |
+|---------------------------|------------------------------|
+| `flutter_bloc`            | State management             |
+| `auto_route`              | Declarative routing          |
+| `get_it`                  | Dependency injection         |
+| `hive` / `hive_flutter`   | Local database               |
+| `json_annotation`         | Model serialization          |
+| `flutter_local_notifications` | Local push notifications |
+| `intl`                    | Date formatting              |
+| `equatable`               | Value-based equality         |
+
+### Dev Dependencies
+| Package                    | Purpose                      |
+|---------------------------|------------------------------|
+| `build_runner`            | Code generation              |
+| `hive_generator`          | Hive model adapters          |
+| `json_serializable`       | JSON parsing boilerplate     |
+| `auto_route_generator`    | AutoRoute navigation builder |
+| `flutter_lints`           | Code linting & best practices|
+
+---
